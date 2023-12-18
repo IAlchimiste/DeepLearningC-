@@ -13,10 +13,10 @@ NUM_EPOCHS
 # Usage
 
 // passer en mode apprentissage et lui donner les argument entré et sortie souhaité.  
-./ia -l {NUM_INPUTS} {NUM_OUTPUTS}   
+`./ia -l {NUM_INPUTS} {NUM_OUTPUTS} `  
   
 // Executer l'ia sur NUM_INPUTS donné.  
-./ia {NUM_INPUTS}                       
+`./ia {NUM_INPUTS}`                       
   
 // Reset the neural network.  
-./ia -r                                
+`./ia -r   `                             
