@@ -1,14 +1,19 @@
 # DeepLearningC-
 Deeplearning C++ ai
 
+# IA compilation
+`start compile_IA.bat` 
+
 # Config file
 
+```
 NUM_LAYERS  
 NUM_NEURONS_PER_LAYER  
 NUM_OUTPUTS  
 NUM_INPUTS  
 LEARNING_RATE  
-NUM_EPOCHS  
+NUM_EPOCHS 
+``` 
 
 # Usage
 
@@ -20,3 +25,4 @@ NUM_EPOCHS
   
 // Reset the neural network.  
 `./ia -r   `                             
+

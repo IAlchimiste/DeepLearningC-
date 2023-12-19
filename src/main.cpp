@@ -15,6 +15,12 @@ struct Config {
     int NUM_EPOCHS;
 };
 
+class NeNetUse {
+public:
+    static Config readConfig(const string& filename);
+    static int NeNetUsing(int argc, char* argv[]);
+};
+
 Config readConfig(const string& filename) {
     Config config;
     ifstream configFile(filename);
