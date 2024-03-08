@@ -1,8 +1,10 @@
 #  DeepLearningCpp 
 
+```
 Application : Deeplearning C++ Neural Network (NN)
 Description : Full editable NN.
-Made by     : The IAlchimiste
+Made by     : The IAlchimiste 
+```
 
 #  IA compilation 
 
