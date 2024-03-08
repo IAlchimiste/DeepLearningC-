@@ -1,25 +1,28 @@
-# -------------------  DeepLearningCpp -------------------
-Deeplearning C++ Neural Network (NN)
-Made by : The IAlchimiste
+#  DeepLearningCpp 
 
-# -------------------- IA compilation --------------------
+Application : Deeplearning C++ Neural Network (NN)
+Description : Full editable NN.
+Made by     : The IAlchimiste
+
+#  IA compilation 
+
 ```
 gpp main.cpp -o ia
 ```
 
-# ----------------------- Execution ----------------------
+#  Execution 
 
 In a Terminal :
 ```
 ./ia
 ```
-# ---------------------- Config file ---------------------
+#  Config file 
 
 ```
 No config file (coming soon).
 ```
 
-# ------------------------- Usage ------------------------
+#  Usage 
 
 # Needed Variable :
 
