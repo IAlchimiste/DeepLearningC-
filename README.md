@@ -9,7 +9,7 @@ Made by     : The IAlchimiste
 #  IA compilation 
 
 ```
-gpp main.cpp -o ia
+gpp src/main.cpp -o build/bin/ia
 ```
 
 #  Execution 
@@ -24,7 +24,7 @@ In a Terminal :
 No config file (coming soon).
 ```
 
-#  Usage 
+#  Usage Of Class NN.h
 
 # Needed Variable :
 
