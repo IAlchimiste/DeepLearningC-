@@ -9,7 +9,7 @@ Made by     : The IAlchimiste
 #  IA compilation 
 
 ```
-gpp src/main.cpp -o build/bin/ia
+g++ src/main.cpp -o build/bin/ia
 ```
 
 #  Execution 
