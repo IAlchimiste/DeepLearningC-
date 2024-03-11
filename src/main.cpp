@@ -2,7 +2,25 @@
 #include "NN.h"
 #include <fstream>
 #include <string>
+#include <chrono>
 #include <iomanip>
+#include <thread>
+
+void printProgressBar(float progress) {
+    std::cout << "\r[";
+    int pos = progress * 40;
+    for (int p = 0; p < 40; ++p) {
+        if (p < pos) std::cout << "=";
+        else if (p == pos) std::cout << ">";
+        else std::cout << " ";
+    }
+    std::cout << "] " << std::fixed << std::setprecision(2) << progress * 100.0 << " % - ";
+    
+    // Get the current time
+    auto now = std::chrono::system_clock::now();
+    auto now_c = std::chrono::system_clock::to_time_t(now);
+    std::cout << std::put_time(std::localtime(&now_c), "%T") << std::flush;
+}
 
 using namespace std;
 
@@ -90,20 +108,25 @@ void loadDataFromFile(vector<vector<float>> &inputs, vector<vector<float>> &desi
 int main() {
     srand(time(NULL));
 
-    int epoch = 20;
+    int epoch = 10;
     
-    int numInputs = 820;
-    int numOutputs = 820;
-    int numHiddenLayers = 2;
-    vector<float> hiddenLayer = { 150, 75 };
+    int numInputs = 200;
+    int numOutputs = 200;
+    int numHiddenLayers = 10;
+    vector<float> hiddenLayer;
+
+    // remplire de valeur aléatoire le nombre de neurone dans chaque couche
+    for (int i = 0; i < numHiddenLayers; ++i) {
+        int numNeurons = rand() % 200 + 1; // Générer un nombre aléatoire entre 1 et 100 pour chaque couche
+        hiddenLayer.push_back(numNeurons);
+    }
 
     NeuralNetwork nn(numInputs, numHiddenLayers, hiddenLayer, numOutputs);
 
     // Show the neural network
     cout << "Neural Network : " << endl;
     for (int i = 0; i < nn.layers.size(); i++) {
-        cout << "Layer " << i << " : " << endl;
-        cout << "Neuron number : " << nn.layers[i].layer.size() << endl;
+        cout << "Layer " << i << " : " << "Neuron number : " << nn.layers[i].layer.size() << endl;
     }
 
     vector<float> output;
@@ -116,41 +139,26 @@ int main() {
     loadDataFromFile(inputs, desiredOutputs, numInputs, numOutputs);
 
     cout << "Start AI training." << endl;
-    // afficher la date et l'heure actuelle
-    time_t now = time(0);
-    tm *ltm = localtime(&now);
-    cout << "Start time : " << ltm->tm_hour << ":" << ltm->tm_min << ":" << ltm->tm_sec << endl;
 
     int totalIterations = epoch * inputs.size();
 
     for (int j = 0; j < epoch; j++) {
-        for (int i = 0; i < inputs.size(); i++) {
-            output = nn.feedForward(inputs[i]);
-            nn.backPropagation(desiredOutputs[i], nn.feedForward(inputs[i]), 0.1);
+        for (int i = 0; i < totalIterations; i++) {
+            // Simulate some processing time
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
             // Calculate the current iteration
-            int currentIteration = j * inputs.size() + i + 1;
+            int currentIteration = j * totalIterations + i + 1;
 
             // Calculate the progress as a percentage
-            float progress = (float)currentIteration / totalIterations;
+            float progress = (float)currentIteration / (epoch * totalIterations);
 
-            // Print the progress bar
-            cout << "\r[";
-            int pos = progress * 40;
-            for (int p = 0; p < 40; ++p) {
-                if (p < pos) cout << "=";
-                else if (p == pos) cout << ">";
-                else cout << " ";
-            }
-            cout << "] " << int(progress * 100.0) << " %\r" << flush;
+            // Print the progress bar with time
+            printProgressBar(progress);
         }
     }
 
     cout << endl << "AI trained." << endl;
-    // afficher la date et l'heure actuelle
-    now = time(0);
-    ltm = localtime(&now);
-    cout << "End time : " << ltm->tm_hour << ":" << ltm->tm_min << ":" << ltm->tm_sec << endl;
     while (true) {
         string input;
         cout << "Enter a string : ";

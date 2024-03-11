@@ -18,10 +18,10 @@ In a Terminal :
 ```
 ./ia
 ```
-#  Config file 
+# DataSet Source
 
 ```
-No config file (coming soon).
+https://www.kaggle.com/
 ```
 
 #  Usage Of Class NN.h
