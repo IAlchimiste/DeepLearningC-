@@ -67,4 +67,4 @@ for (int i = 0; i< 500; i++) { // make 500 iteration
     output = nn.feedForward(inputValues); // Load outputs
     nn.backPropagation(expectedOutputs, outputs, 0.1); // Train network with the values
 }
-``
+```
