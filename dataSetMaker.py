@@ -26,15 +26,18 @@ os.makedirs('data/outputs', exist_ok=True)
 # Lire le fichier
 with open('data/human_chat.txt', 'r') as file:
     lines = file.readlines()
+
 # Créer les fichiers
 for i in range(0, len(lines), 2):
     # Vérifier si l'indice suivant est valide
     if i + 1 < len(lines):
         # Écrire dans les fichiers d'entrée et de sortie
         with open(f'data/inputs/{i // 2}.txt', 'w') as file:
-            file.write(lines[i])
+            for char in lines[i]:
+                file.write(char + '\n')
         with open(f'data/outputs/{i // 2}.txt', 'w') as file:
-            file.write(lines[i + 1])
+            for char in lines[i + 1]:
+                file.write(char + '\n')
     else:
         print(f"Fin de la création du dataset !")
 
@@ -46,6 +49,5 @@ with open('data/human_chat.txt', 'r') as file:
 max_length = max(len(line) for line in lines)
 
 print(f"La ligne avec le plus de caractères a une longueur de : {max_length}")
-
 
 print('Done')

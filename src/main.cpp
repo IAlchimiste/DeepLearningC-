@@ -108,20 +108,30 @@ void loadDataFromFile(vector<vector<float>> &inputs, vector<vector<float>> &desi
 int main() {
     srand(time(NULL));
 
-    int epoch = 10;
+    int epoch = 50;
     
     int numInputs = 200;
     int numOutputs = 200;
-    int numHiddenLayers = 10;
+    int numHiddenLayers = 5;
     vector<float> hiddenLayer;
+    vector<int> activationFunctionVector;
 
     // remplire de valeur aléatoire le nombre de neurone dans chaque couche
     for (int i = 0; i < numHiddenLayers; ++i) {
-        int numNeurons = rand() % 200 + 1; // Générer un nombre aléatoire entre 1 et 100 pour chaque couche
+        int numNeurons = rand() % 250 + 51; // Générer un nombre aléatoire entre 1 et 100 pour chaque couche
         hiddenLayer.push_back(numNeurons);
+        activationFunctionVector.push_back(rand() % 2); // Générer un nombre aléatoire entre 0 et 1 pour chaque couche
     }
 
-    NeuralNetwork nn(numInputs, numHiddenLayers, hiddenLayer, numOutputs);
+    // Ajouter des fonctions d'activation pour la couche d'entrée et de sortie
+    activationFunctionVector.push_back(0); // Fonction d'activation pour la couche d'entrée
+    for (int i = 0; i < numHiddenLayers; i++) {
+        activationFunctionVector.push_back(i); // Fonction d'activation pour chaque couche cachée
+    }
+    activationFunctionVector.push_back(0); // Fonction d'activation pour la couche de sortie
+
+    NeuralNetwork nn(numInputs, numHiddenLayers, hiddenLayer, activationFunctionVector, numOutputs);
+
 
     // Show the neural network
     cout << "Neural Network : " << endl;
@@ -144,8 +154,6 @@ int main() {
 
     for (int j = 0; j < epoch; j++) {
         for (int i = 0; i < totalIterations; i++) {
-            // Simulate some processing time
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
             // Calculate the current iteration
             int currentIteration = j * totalIterations + i + 1;
