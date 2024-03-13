@@ -4,9 +4,8 @@
 #include <string>
 #include <chrono>
 #include <iomanip>
-#include <thread>
 
-void printProgressBar(float progress) {
+void printProgressBar(float progress, float mse) {
     std::cout << "\r[";
     int pos = progress * 40;
     for (int p = 0; p < 40; ++p) {
@@ -19,7 +18,7 @@ void printProgressBar(float progress) {
     // Get the current time
     auto now = std::chrono::system_clock::now();
     auto now_c = std::chrono::system_clock::to_time_t(now);
-    std::cout << std::put_time(std::localtime(&now_c), "%T") << std::flush;
+    std::cout << std::put_time(std::localtime(&now_c), "%T") << " mse : " << std::setprecision(std::numeric_limits<float>::max_digits10) << mse  << std::flush;
 }
 
 using namespace std;
@@ -62,6 +61,18 @@ vector<float> convertInput(string input) {
     }
 
     return data;
+}
+
+// Fonction pour convertir la sortie en texte
+string convertOutput(vector<float> output) {
+    string text;
+
+    for (float& f : output) {
+        char c = static_cast<char>(f * 255.0f);
+        text += c;
+    }
+
+    return text;
 }
 
 // Fonction pour charger plusieur fichier dans un vecteur
@@ -108,11 +119,12 @@ void loadDataFromFile(vector<vector<float>> &inputs, vector<vector<float>> &desi
 int main() {
     srand(time(NULL));
 
-    int epoch = 50;
+    int epoch = 10;
     
     int numInputs = 200;
     int numOutputs = 200;
     int numHiddenLayers = 5;
+    float learningRate = 0.01;
     vector<float> hiddenLayer;
     vector<int> activationFunctionVector;
 
@@ -126,7 +138,7 @@ int main() {
     // Ajouter des fonctions d'activation pour la couche d'entrée et de sortie
     activationFunctionVector.push_back(0); // Fonction d'activation pour la couche d'entrée
     for (int i = 0; i < numHiddenLayers; i++) {
-        activationFunctionVector.push_back(i); // Fonction d'activation pour chaque couche cachée
+        activationFunctionVector.push_back(rand() % 5); // Fonction d'activation pour chaque couche cachée
     }
     activationFunctionVector.push_back(0); // Fonction d'activation pour la couche de sortie
 
@@ -152,21 +164,52 @@ int main() {
 
     int totalIterations = epoch * inputs.size();
 
-    for (int j = 0; j < epoch; j++) {
-        for (int i = 0; i < totalIterations; i++) {
+    float totalError = 0.0f; // Pour stocker l'erreur totale
+    float mse = 0.2f; // Pour stocker l'erreur quadratique moyenne
+    float oldMse = 0.0f;
+    
+    while (mse > 0.1f) {
+        mse = 0.0f;
+        for (int j = 0; j < epoch; j++) {
+            for (int i = 0; i < inputs.size(); i++) {
 
-            // Calculate the current iteration
-            int currentIteration = j * totalIterations + i + 1;
+                // Calculate the current iteration
+                int currentIteration = j * inputs.size() + i + 1;
 
-            // Calculate the progress as a percentage
-            float progress = (float)currentIteration / (epoch * totalIterations);
+                // Calculate the progress as a percentage
+                float progress = (float)currentIteration / (epoch * inputs.size());
 
-            // Print the progress bar with time
-            printProgressBar(progress);
+                // Print the progress bar with time
+                printProgressBar(progress, mse);
+
+                // Feed forward
+                vector<float> output = nn.feedForward(inputs[i]);
+
+                // Backpropagation
+                nn.backPropagation(desiredOutputs[i], output, learningRate);
+
+                // Calculate the error
+                for (int k = 0; k < output.size(); k++) {
+                    float error = desiredOutputs[i][k] - output[k];
+                    totalError += error * error;
+                }
+            }
+            // Calculate the mean squared error for this epoch
+            mse = totalError / (inputs.size() * desiredOutputs[0].size());
+
+            // Reset the total error for the next epoch
+            totalError = 0.0f;
         }
+        cout << endl;
+        if (oldMse == mse || mse > oldMse && oldMse != 0.0f) {
+            cout << "The neural network is not learning." << endl;
+            break;
+        }
+        oldMse = mse;
     }
-
-    cout << endl << "AI trained." << endl;
+    cout << endl;
+    // Test the neural network
+    cout << "Testing the neural network." << endl;
     while (true) {
         string input;
         cout << "Enter a string : ";
@@ -176,16 +219,11 @@ int main() {
             break;
         }
 
-        vector<float> inputVector = convertInput(input);
-        output = nn.feedForward(inputVector);
-
-        cout << "Output : " ;
-
-        for (float &value : output) {
-            char c = static_cast<char>(value * 255.0f);
-            cout << c;
-        }
-        cout << endl;
+        vector<float> data = convertInput(input);
+        vector<float> output = nn.feedForward(data);
+        string text = convertOutput(output);
+        cout << "Output : " << text << endl;
     }
+    
     return 0;
 }
