@@ -1,0 +1,22 @@
+Neural Network : 
+Layer 0 : Neuron number : 200  sigmoid
+Layer 1 : Neuron number : 192  sigmoid
+Layer 2 : Neuron number : 249  sigmoid
+Layer 3 : Neuron number : 67  linear
+Layer 4 : Neuron number : 110  sigmoid
+Layer 5 : Neuron number : 243  leakyRelu
+Layer 6 : Neuron number : 210  sigmoid
+Layer 7 : Neuron number : 273  relu
+Layer 8 : Neuron number : 80  sigmoid
+Layer 9 : Neuron number : 231  linear
+Layer 10 : Neuron number : 206  relu
+Layer 11 : Neuron number : 266  relu
+Layer 12 : Neuron number : 259  leakyRelu
+Layer 13 : Neuron number : 297  relu
+Layer 14 : Neuron number : 137  tanh
+Layer 15 : Neuron number : 100  sigmoid
+Layer 16 : Neuron number : 118  leakyRelu
+Layer 17 : Neuron number : 122  sigmoid
+Layer 18 : Neuron number : 284  relu
+Layer 19 : Neuron number : 119  tanh
+Layer 20 : Neuron number : 200  tanh

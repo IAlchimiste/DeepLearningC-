@@ -91,25 +91,6 @@ public:
         return tanh(x);
     }
 
-    // Softmax
-    // Note: Cette fonction suppose que 'x' est la sortie de la couche finale du réseau de neurones.
-    vector<float> softmax(vector<float> x) {
-        vector<float> output(x.size());
-        float maxElement = *max_element(x.begin(), x.end());
-        float sum = 0;
-
-        for (int i = 0; i < x.size(); i++) {
-            output[i] = exp(x[i] - maxElement);
-            sum += output[i];
-        }
-
-        for (int i = 0; i < x.size(); i++) {
-            output[i] /= sum;
-        }
-
-        return output;
-    }
-
     // Fonction d'activation linéaire
     float linear(float x) {
         return x;

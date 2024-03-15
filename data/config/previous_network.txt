@@ -1,0 +1,18 @@
+Neural Network : 
+Layer 0 : Neuron number : 200  sigmoid
+Layer 1 : Neuron number : 161  sigmoid
+Layer 2 : Neuron number : 171  sigmoid
+Layer 3 : Neuron number : 246  relu
+Layer 4 : Neuron number : 132  relu
+Layer 5 : Neuron number : 139  linear
+Layer 6 : Neuron number : 116  sigmoid
+Layer 7 : Neuron number : 97  linear
+Layer 8 : Neuron number : 114  relu
+Layer 9 : Neuron number : 293  tanh
+Layer 10 : Neuron number : 185  relu
+Layer 11 : Neuron number : 56  linear
+Layer 12 : Neuron number : 54  tanh
+Layer 13 : Neuron number : 207  sigmoid
+Layer 14 : Neuron number : 299  tanh
+Layer 15 : Neuron number : 200  tanh
+MSE : 0.820185
