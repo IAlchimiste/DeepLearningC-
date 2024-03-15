@@ -53,7 +53,7 @@ bool isMseIncreasingOrStagnant(float oldMse, float mse) {
 }
 
 bool shouldReset(float oldMse, float mse) {
-    return std::isnan(mse) || (isMseIncreasingOrStagnant(oldMse, mse) && oldMse != 0.0f) || mse > 1.0f;
+    return std::isnan(mse) || std::isinf(mse) || (isMseIncreasingOrStagnant(oldMse, mse) && oldMse != 0.0f) || mse > 1.0f;
 }
 
 void printProgressBar(float progress, float mse) {
@@ -180,29 +180,18 @@ int main() {
     vector<int> activationFunctionVector;
     vector<string> nnStringVector;
 
-    // remplire de valeur aléatoire le nombre de neurone dans chaque couche
-    for (int i = 0; i < numHiddenLayers; ++i) {
-        int numNeurons = rand() % 250 + 51; // Générer un nombre aléatoire entre 1 et 100 pour chaque couche
-        hiddenLayer.push_back(numNeurons);
-        activationFunctionVector.push_back(rand() % 2); // Générer un nombre aléatoire entre 0 et 1 pour chaque couche
-    }
-
-    // Ajouter des fonctions d'activation pour la couche d'entrée et de sortie
-    activationFunctionVector.push_back(0); // Fonction d'activation pour la couche d'entrée
-    for (int i = 0; i < numHiddenLayers; i++) {
-        activationFunctionVector.push_back(rand() % 5); // Fonction d'activation pour chaque couche cachée
-    }
-    activationFunctionVector.push_back(0); // Fonction d'activation pour la couche de sortie
-
     // Tableau de chaînes représentant les fonctions d'activation
     vector<string> activationFunctions = {"sigmoid", "relu", "tanh", "linear", "leakyRelu"};
     
-    numHiddenLayers = rand() % 20 + 1;
+    numHiddenLayers = rand() % 5 + 2;
+
+    activationFunctionVector.push_back(0); // Fonction d'activation pour la couche d'entrée
     for (int i = 0; i < numHiddenLayers; ++i) {
-        int numNeurons = rand() % 250 + 51;
+        int numNeurons = rand() % 5 + 1;
         hiddenLayer.push_back(numNeurons);
         activationFunctionVector.push_back(rand() % 5);
     }
+    activationFunctionVector.push_back(0); // Fonction d'activation pour la couche de sortie
 
     NeuralNetwork nn = NeuralNetwork(numInputs, numHiddenLayers, hiddenLayer, activationFunctionVector, numOutputs);
     
@@ -237,7 +226,7 @@ int main() {
     float mse = 0.2f; // Pour stocker l'erreur quadratique moyenne
     float oldMse = 0.0f;
     
-    while (mse > 0.01f) {
+    while (true) {
         mse = 0.0f;
         for (int j = 0; j < epoch; j++) {
             for (int i = 0; i < inputs.size(); i++) {
@@ -266,11 +255,18 @@ int main() {
             // Calculate the mean squared error for this epoch
             mse = totalError / (inputs.size() * desiredOutputs[0].size());
             totalError = 0.0f;
+
+            // si mon mse est a nan ou inf ou -nan ou -inf ou si mon mse est plus grand que 1 sortir de la boucle et reset le réseau
+            if (std::isnan(mse) || std::isinf(mse) || mse > 1.0f) {
+                cout << endl << "MSE is NaN or Inf or greater than 1.0. Resetting the network. mes : " << mse << endl;
+                break;
+            }
         }
         cout << endl;
         float Bestmse = getMseFromFile("data/config/best_network.txt");
-        if (mse > Bestmse || Bestmse == -1.0f) {
-            
+        cout << "Best MSE : " << Bestmse << endl;
+        if (mse < Bestmse || Bestmse == -1.0f) {
+            cout << "New best network found." << endl;
             std::ofstream bestNetworkFile("data/config/best_network.txt");
                 
             bestNetworkFile << "Neural Network : " << std::endl;
@@ -287,7 +283,7 @@ int main() {
         }
         
         if ((shouldReset(oldMse, mse))) {
-            cout << "TRAINING LOOK BAD !." << endl;
+            cout << "AI NEED TO BE RESET !" << endl;
 
             std::ofstream previousNetworkFile("data/config/previous_network.txt");
 
@@ -304,13 +300,19 @@ int main() {
             previousNetworkFile.close();
 
             cout << "Resetting the network." << endl;
+            
             // Reset network
-            numHiddenLayers = rand() % 20 + 1;
-            for (int i = 0; i < numHiddenLayers; ++i) {
-                int numNeurons = rand() % 250 + 51;
-                hiddenLayer.push_back(numNeurons);
-                activationFunctionVector.push_back(rand() % 5);
+            numHiddenLayers = rand() % 5 + 2;
+            hiddenLayer.clear();
+            activationFunctionVector.clear();
+
+            activationFunctionVector.push_back(0); // Fonction d'activation pour la couche d'entrée
+            for (int i = 0; i < numHiddenLayers; ++i) { // Ajouter des couches cachées
+                int numNeurons = rand() % 5 + 1; // Nombre de neurones dans la couche cachée
+                hiddenLayer.push_back(numNeurons); // Ajouter le nombre de neurones à la couche cachée
+                activationFunctionVector.push_back(rand() % 5); // Ajouter une fonction d'activation pour la couche cachée
             }
+            activationFunctionVector.push_back(0); // Fonction d'activation pour la couche de sortie
             nn = NeuralNetwork(numInputs, numHiddenLayers, hiddenLayer, activationFunctionVector, numOutputs);
 
             std::ofstream currentNetworkFile("data/config/current_network.txt");
@@ -329,6 +331,7 @@ int main() {
 
         }
         oldMse = mse;
+        mse = 0.0f;
     }
     return 0;
 }
